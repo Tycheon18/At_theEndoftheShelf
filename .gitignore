@@ -1,61 +1,17 @@
-# UE-specific folders
-Binaries/
-DerivedDataCache/
-Intermediate/
-Saved/
-
-# Visual Studio files
-.vscode/
+Binaries
+DerivedDataCache
+Intermediate
+Saved
+ModernHouse
+StarterContent
+.vscode
+.vs
 *.VC.db
+*.opensdf
+*.opendb
+*.sdf
+*.sln
 *.suo
-*.user
-*.userosscache
-*.sln.docstates
-.vs/
-*.ipch
-
-# Build system files
 *.xcodeproj
 *.xcworkspace
-*.xcuserdata/
-
-# Mac specific
-.DS_Store
-
-# Windows specific
-Thumbs.db
-ehthumbs.db
-desktop.ini
-
-# Backup files
-*.bak
-*.tmp
-
-# Compiled source
-*.obj
-*.pdb
-*.exe
-*.dll
-*.lib
-*.app
-*.dylib
-*.ipa
-
-# Unreal-specific file types
-*.generated.*
-*.opensdf
-*.sdf
-
-# Plugin folders (if generated)
-Plugins/*/Intermediate/
-Plugins/*/Binaries/
-
-# Ignore crash reports
-*.crash
-*.log
-*.dmp
-
-# Optional: ignore UAsset backups
-*.uasset~
-\
 
