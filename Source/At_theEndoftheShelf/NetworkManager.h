@@ -34,6 +34,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Network")
 	void Delete(const FString& URL, const TMap<FString, FString>& Headers);
 
+	UFUNCTION(BlueprintCallable, Category = "Network")
+	FString GetHttpErrorMessage(int32 ResponseCode);
+
 	UPROPERTY(BlueprintAssignable, Category = "Network")
 	FOnHttpResponse OnResponse;
 

@@ -30,6 +30,31 @@ void UNetworkManager::Delete(const FString& URL, const TMap<FString, FString>& H
 	MakeRequest(TEXT("DELETE"), URL, "", Headers);
 }
 
+FString UNetworkManager::GetHttpErrorMessage(int32 ResponseCode)
+{
+	if (ResponseCode >= 400 && ResponseCode < 500)
+	{
+		// 4xx: Client Error
+		switch (ResponseCode)
+		{
+			case 400: return TEXT("Bad request. Please check your input.");
+			case 401: return TEXT("Unauthorized. Please check your API key.");
+			case 403: return TEXT("Access forbidden.");
+			case 404: return TEXT("Resource not found.");
+			case 429: return TEXT("Too many requests. Please try again later.");
+			default: return FString::Printf(TEXT("Client error %d"), ResponseCode);
+		}
+	}
+	else if (ResponseCode >= 500)
+	{
+		// 5xx: Server Error
+		return FString::Printf(TEXT("Server error %d. Please try again later."), ResponseCode);
+	}
+
+	return FString::Printf(TEXT("HTTP Error %d"), ResponseCode);
+
+}
+
 void UNetworkManager::CancelRequest()
 {
 	if(CurrentRequest.IsValid())
@@ -101,7 +126,7 @@ void UNetworkManager::OnHttpResponseReceived(FHttpRequestPtr Request, FHttpRespo
 		}
 		else
 		{
-			FString ErrorMessage = FString::Printf(TEXT("HTTP Error %d: %s"), ResponseCode, *ResponseString);
+			FString ErrorMessage = GetHttpErrorMessage(ResponseCode);
 			OnError.Broadcast(ErrorMessage);
 		}
 	}

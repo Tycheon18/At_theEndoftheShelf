@@ -316,7 +316,8 @@ bool AAES_PlayerState::IsCacheValid(const FString& Query) const
 	FDateTime Now = GetCurrentDateTime();
 	FDateTime CacheTime = CacheTimestamps[Query];
 
-	return (Now - CacheTime).GetTotalHours() < 1.0f;
+
+	return (Now - CacheTime).GetTotalHours() < CacheValidHours;
 }
 
 void AAES_PlayerState::CleanupOldCache()

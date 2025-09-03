@@ -112,6 +112,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Reading Logs", ReplicatedUsing = OnRep_ReadingLogs)
 	TArray<FReadingLog> ReadingLogs;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cache Settings", meta = (ClampMin = "0.1", ClampMax = "48.0", ToolTip = "Cache validity duration in hours"))
+	float CacheValidHours = 6.0f;
+
 	TMap<FString, TArray<FBookInfo>> SearchCache;
 
 	UPROPERTY()
@@ -122,6 +125,8 @@ protected:
 
 	UFUNCTION()
 	void OnRep_ReadingLogs();
+
+
 
 	FString GenerateLogId() const;
 	FDateTime GetCurrentDateTime() const;

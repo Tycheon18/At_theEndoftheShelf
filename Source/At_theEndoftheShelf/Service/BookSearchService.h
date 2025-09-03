@@ -11,10 +11,10 @@
 UENUM(BlueprintType)
 enum class ESearchCategory : uint8
 {
-	All UMETA(DisplayName = "��ü"),
-	Title UMETA(DisplayName = "å ����"),
-	Authors UMETA(DisplayName = "����"),
-	Publisher UMETA(DisplayName = "���ǻ�"),
+	All UMETA(DisplayName = "All"),
+	Title UMETA(DisplayName = "Title"),
+	Authors UMETA(DisplayName = "Authors"),
+	Publisher UMETA(DisplayName = "Publisher"),
 };
 
 USTRUCT(BlueprintType)
@@ -41,7 +41,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSearchFailed, const FString&, Err
 /**
  * 
  */
-UCLASS()
+UCLASS(Blueprintable)
 class AT_THEENDOFTHESHELF_API UBookSearchService : public UObject
 {
 	GENERATED_BODY()
@@ -67,7 +67,21 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Book Search")
 	void SetNetworkManager(UNetworkManager* InNetworkManager)
 	{
+		if(NetworkManager)
+		{
+			NetworkManager->OnResponse.RemoveAll(this);
+			NetworkManager->OnError.RemoveAll(this);
+		}
+
 		NetworkManager = InNetworkManager;
+
+		if(NetworkManager)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("NetworkManager set successfully."));
+
+			NetworkManager->OnResponse.AddDynamic(this, &UBookSearchService::OnResponse);
+			NetworkManager->OnError.AddDynamic(this, &UBookSearchService::OnError);
+		}
 	}
 
 	UFUNCTION(BlueprintCallable, Category = "Book Search")
@@ -76,12 +90,20 @@ public:
 		return bIsSearching;
 	}
 
+	UFUNCTION(BlueprintCallable, Category = "Delegate")
+	void CleanupDelegates();
+
 protected:
 
+	UFUNCTION()
 	void OnResponse(const FString& Response);
+	
+	UFUNCTION()
 	void OnError(const FString& Error);
+	
 	bool ParseSearchResponse(const FString& JsonString, FSearchResult& OutResult);
 	FString CategoryToString(ESearchCategory Category);
+
 
 	UPROPERTY()
 	UNetworkManager* NetworkManager;
