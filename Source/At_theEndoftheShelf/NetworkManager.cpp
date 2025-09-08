@@ -55,6 +55,37 @@ FString UNetworkManager::GetHttpErrorMessage(int32 ResponseCode)
 
 }
 
+void UNetworkManager::DownloadImage(const FString& ImageUrl)
+{
+	if(ImageUrl.IsEmpty())
+	{
+		OnImageDownload.Broadcast(ImageUrl, nullptr);
+		return;
+	}
+
+	if (ActiveImageRequests.Contains(ImageUrl))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Image already downloading: %s"), *ImageUrl);
+		return;
+	}
+
+	TSharedRef<IHttpRequest> HttpRequest = FHttpModule::Get().CreateRequest();
+	HttpRequest->SetVerb("GET");
+	HttpRequest->SetURL(ImageUrl);
+	HttpRequest->OnProcessRequestComplete().BindLambda(
+		[this, ImageUrl](FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful)
+		{
+			this->OnImageDownloadComplete(ImageUrl, Request, Response, bWasSuccessful);
+		}
+	);
+
+	ActiveImageRequests.Add(ImageUrl, HttpRequest);
+	HttpRequest->ProcessRequest();
+
+	UE_LOG(LogTemp, Log, TEXT("NetworkManager: Downloading image from %s"), *ImageUrl);
+
+}
+
 void UNetworkManager::CancelRequest()
 {
 	if(CurrentRequest.IsValid())
@@ -135,6 +166,11 @@ void UNetworkManager::OnHttpResponseReceived(FHttpRequestPtr Request, FHttpRespo
 		FString ErrorMessage = Response.IsValid() ? FString::Printf(TEXT("Network Error: %d"), Response->GetResponseCode()) : TEXT("Network Connection Failed");
 		OnError.Broadcast(ErrorMessage);
 	}
+}
+
+void UNetworkManager::OnImageDownloadComplete(const FString& OriginalUrl, FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful)
+{
+
 }
 
 FString UNetworkManager::BuildFullURL(const FString& URL)

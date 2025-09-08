@@ -11,6 +11,7 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnHttpResponse, const FString&, Response);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnHttpError, const FString&, ErrorMessage);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnImageDownloadDelegate, const FString&, ImageUrl, UTexture2D*, Texture);
 /**
  * 
  */
@@ -37,11 +38,17 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Network")
 	FString GetHttpErrorMessage(int32 ResponseCode);
 
+	UFUNCTION(BlueprintCallable, Category = "Network")
+	void DownloadImage(const FString& ImageUrl);
+
 	UPROPERTY(BlueprintAssignable, Category = "Network")
 	FOnHttpResponse OnResponse;
 
 	UPROPERTY(BlueprintAssignable, Category = "Network")
 	FOnHttpError OnError;
+
+	UPROPERTY(BlueprintAssignable, Category = "Network")
+	FOnImageDownloadDelegate OnImageDownload;
 
 	UFUNCTION(BlueprintCallable, Category = "Network")
 	void SetAuthToken(const FString& Token)
@@ -76,6 +83,8 @@ protected:
 	
 	void OnHttpResponseReceived(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful);
 
+	void OnImageDownloadComplete(const FString& OriginalUrl, FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful);
+
 	FString BuildFullURL(const FString& URL);
 
 	UPROPERTY()
@@ -91,4 +100,6 @@ protected:
 	bool bIsRequesting;
 
 	TSharedPtr<IHttpRequest, ESPMode::ThreadSafe> CurrentRequest;
+
+	TMap<FString, TSharedPtr<IHttpRequest>> ActiveImageRequests;
 };
