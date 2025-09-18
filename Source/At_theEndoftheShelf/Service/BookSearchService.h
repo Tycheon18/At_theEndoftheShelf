@@ -17,23 +17,7 @@ enum class ESearchCategory : uint8
 	Publisher UMETA(DisplayName = "Publisher"),
 };
 
-USTRUCT(BlueprintType)
-struct FSearchResult
-{
-	GENERATED_BODY()
 
-	UPROPERTY(BlueprintReadWrite, Category = "Search")
-	TArray<FBookInfo> Books;
-	
-	UPROPERTY(BlueprintReadWrite, Category = "Search")
-	int32 TotalCount;
-	
-	UPROPERTY(BlueprintReadWrite, Category = "Search")
-	bool bIsEnd;
-
-	UPROPERTY(BlueprintReadWrite, Category = "Search")
-	int32 PageableCount;
-};
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSearchCompleted, const FSearchResult&, Result);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSearchFailed, const FString&, ErrorMessage);

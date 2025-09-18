@@ -102,4 +102,6 @@ protected:
 	TSharedPtr<IHttpRequest, ESPMode::ThreadSafe> CurrentRequest;
 
 	TMap<FString, TSharedPtr<IHttpRequest>> ActiveImageRequests;
+
+	TMap<FString, UTexture2D*> ImageCache;
 };

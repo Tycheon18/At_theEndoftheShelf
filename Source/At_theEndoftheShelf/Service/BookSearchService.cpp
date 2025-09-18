@@ -133,7 +133,10 @@ bool UBookSearchService::ParseSearchResponse(const FString& JsonString, FSearchR
 			FBookInfo BookInfo;
 			BookInfo.Title = BookObject->GetStringField(TEXT("title"));
 			BookInfo.Publisher = BookObject->GetStringField(TEXT("publisher"));
-			BookInfo.Thumbnail = BookObject->GetStringField(TEXT("thumbnail"));
+			//BookInfo.Thumbnail = BookObject->GetStringField(TEXT("thumbnail"));
+			FString ThumbnailUrl = BookObject->GetStringField(TEXT("thumbnail"));
+			UE_LOG(LogTemp, Warning, TEXT("Parsed thumbnail: %s"), *ThumbnailUrl);
+			BookInfo.Thumbnail = ThumbnailUrl;
 			BookInfo.Contents = BookObject->GetStringField(TEXT("summary"));
 			BookInfo.ISBN = BookObject->GetStringField(TEXT("isbn"));
 			//BookInfo.Price = BookObject->GetStringField(TEXT("price"));

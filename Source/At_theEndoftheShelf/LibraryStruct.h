@@ -62,6 +62,24 @@ struct FBookInfo
 	FString DateTime;
 };
 
+USTRUCT(BlueprintType)
+struct FSearchResult
+{
+	GENERATED_BODY()
+
+	UPROPERTY(BlueprintReadWrite, Category = "Search")
+	TArray<FBookInfo> Books;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Search")
+	int32 TotalCount;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Search")
+	bool bIsEnd;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Search")
+	int32 PageableCount;
+};
+
 UCLASS()
 class AT_THEENDOFTHESHELF_API ALibraryStruct : public AActor
 {

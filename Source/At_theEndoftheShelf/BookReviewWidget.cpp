@@ -9,6 +9,7 @@
 #include "BookReviewManager.h"
 #include "BookSearchManager.h"
 
+
 void UBookReviewWidget::NativeConstruct()
 {
 	Super::NativeConstruct();

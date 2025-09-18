@@ -2,6 +2,7 @@
 
 
 #include "NetworkManager.h"
+#include "ImageUtils.h"
 
 UNetworkManager::UNetworkManager()
 {
@@ -59,6 +60,7 @@ void UNetworkManager::DownloadImage(const FString& ImageUrl)
 {
 	if(ImageUrl.IsEmpty())
 	{
+		UE_LOG(LogTemp, Warning, TEXT("URL is not Found: %s"), *ImageUrl);
 		OnImageDownload.Broadcast(ImageUrl, nullptr);
 		return;
 	}
@@ -170,7 +172,30 @@ void UNetworkManager::OnHttpResponseReceived(FHttpRequestPtr Request, FHttpRespo
 
 void UNetworkManager::OnImageDownloadComplete(const FString& OriginalUrl, FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful)
 {
+	ActiveImageRequests.Remove(OriginalUrl);
 
+	if (bWasSuccessful && Response.IsValid())
+	{
+		TArray<uint8> ImageData = Response->GetContent();
+
+		UTexture2D* Texture = FImageUtils::ImportBufferAsTexture2D(ImageData);
+	
+		if (Texture)
+		{
+			UE_LOG(LogTemp, Log, TEXT("Image loaded successfully: %s"), *OriginalUrl);
+			OnImageDownload.Broadcast(OriginalUrl, Texture);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("Failed to create texture from image data: %s"), *OriginalUrl);
+			OnImageDownload.Broadcast(OriginalUrl, nullptr);
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Image download failed: %s"), *OriginalUrl);
+		OnImageDownload.Broadcast(OriginalUrl, nullptr);
+	}
 }
 
 FString UNetworkManager::BuildFullURL(const FString& URL)

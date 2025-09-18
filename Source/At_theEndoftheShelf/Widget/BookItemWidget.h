@@ -25,9 +25,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Book Item")
 	void SetBookData(const FBookInfo& InBookInfo);
 
-	UFUNCTION(BlueprintCallable, Category = "Book Item")
-	void LoadThumbnailImage(const FString& ImageUrl);
-
 protected:
 
 	UPROPERTY(meta = (BindWidget))
@@ -41,4 +38,11 @@ protected:
 
 	UPROPERTY(meta = (BindWidget))
 	class UImage* ThumbnailImage;
+
+	UFUNCTION()
+	void OnImageDownloaded(const FString& ImageUrl, UTexture2D* Texture);
+
+	class UNetworkManager* NetworkManager;
+
+	FString CurrentImageUrl;
 };
