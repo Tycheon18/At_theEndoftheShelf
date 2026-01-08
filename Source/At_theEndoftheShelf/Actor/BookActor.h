@@ -54,4 +54,8 @@ protected:
 
 	UFUNCTION(BlueprintCallable, Category = "Book")
 	void UpdateBookAppearance();
+
+protected:
+
+	FLinearColor GenGenreColor() const;
 };

@@ -9,6 +9,7 @@
 #include "../LibraryStruct.h"
 #include "BookItemWidget.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnBookItemClicked, const FBookInfo&, BookInfo);
 /**
  * 
  */
@@ -25,24 +26,33 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Book Item")
 	void SetBookData(const FBookInfo& InBookInfo);
 
+	UPROPERTY(BlueprintAssignable, Category = "Events")
+	FOnBookItemClicked OnBookItemClicked;
 protected:
 
 	UPROPERTY(meta = (BindWidget))
 	class UTextBlock* TitleText;
 
 	UPROPERTY(meta = (BindWidget))
-	class UTextBlock* AuthorsText;
+	UTextBlock* AuthorsText;
 
 	UPROPERTY(meta = (BindWidget))
-	class UTextBlock* PublisherText;
+	UTextBlock* PublisherText;
 
 	UPROPERTY(meta = (BindWidget))
 	class UImage* ThumbnailImage;
+
+	UPROPERTY(meta = (BindWidget))
+	class UButton* ItemButton;
 
 	UFUNCTION()
 	void OnImageDownloaded(const FString& ImageUrl, UTexture2D* Texture);
 
 	class UNetworkManager* NetworkManager;
-
+	FBookInfo CurrentBookInfo;
 	FString CurrentImageUrl;
+
+	UFUNCTION()
+	void OnItemButtonClicked();
+
 };

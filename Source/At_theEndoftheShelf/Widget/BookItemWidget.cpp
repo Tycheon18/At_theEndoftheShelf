@@ -7,6 +7,7 @@
 #include "../LibraryStruct.h"
 #include "Components/TextBlock.h"
 #include "Components/Image.h"
+#include "Components/Button.h"
 
 void UBookItemWidget::NativeConstruct()
 {
@@ -27,11 +28,18 @@ void UBookItemWidget::NativeConstruct()
 		}
 
 	}
+
+    if (ItemButton)
+    {
+        ItemButton->OnClicked.AddDynamic(this, &UBookItemWidget::OnItemButtonClicked);
+    }
 }
 
 void UBookItemWidget::SetBookData(const FBookInfo& InBookInfo)
 {
     UE_LOG(LogTemp, Warning, TEXT("SetBookData called with thumbnail: %s"), *InBookInfo.Thumbnail);
+
+    CurrentBookInfo = InBookInfo;
 
     if (TitleText)
     {
@@ -67,5 +75,13 @@ void UBookItemWidget::OnImageDownloaded(const FString& ImageUrl, UTexture2D* Tex
             ThumbnailImage->SetBrushFromTexture(Texture);
         }
     }
+}
+
+void UBookItemWidget::OnItemButtonClicked()
+{
+    UE_LOG(LogTemp, Log, TEXT("BookItemWidget: Clicked - %s"), *CurrentBookInfo.Title);
+
+    // 델리게이트 브로드캐스트
+    OnBookItemClicked.Broadcast(CurrentBookInfo);
 }
 

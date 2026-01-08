@@ -34,7 +34,7 @@ public:
 	UBookSearchService();
 
 	UFUNCTION(BlueprintCallable, Category = "Book Search")
-	void SearchBooks(const FString& Query, ESearchCategory Category = ESearchCategory::All, int32 Page = 1, int32 Size = 10);
+	void SearchBooks(const FString& Query, ESearchCategory Category = ESearchCategory::All, int32 Page = 1, int32 Size = 50);
 
 	UPROPERTY(BlueprintAssignable, Category = "Book Search")
 	FOnSearchCompleted OnSearchCompleted;
